@@ -11,6 +11,7 @@ https://ytlab.jp/sign/signbn/download.html
 ## R
 ```R
 ## import SiGN result
+source("loadSign.R")
 signBn <- loadSign("result")
 
 ## same input as SiGN
