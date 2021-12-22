@@ -94,7 +94,7 @@ for (i in pathNum){
     candEntre <- AnnotationDbi::select(org.Hs.eg.db, candEnsg, c("ENTREZID"), c("ENSEMBL"))$ENTREZID
     candEntre <- candEntre[!is.na(candEntre)]
     mywc[[as.character(i)]] <- wcGeneSummary(candEntre, max.words=200, random.order=FALSE, excludeFreq=15000,
-                  colors=palettetown::pokepal(floor(runif(1, min=1, max=150))), shape="circle", rot.per=0.4)$wc +
+                  colors=palettetown::pokepal(sample(1:151,1)), shape="circle", rot.per=0.4)$wc +
         ggtitle(paste0("ME",i))
 }
 
