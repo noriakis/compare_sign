@@ -1,6 +1,6 @@
 # compare_sign
 
-Comparing the BN inferred by SiGN-BN HC+BS and bnlearn.
+Comparing the Bayesian network inferred by SiGN-BN HC+BS and bnlearn.
 
 ## Download
 https://ytlab.jp/sign/signbn/download.html
@@ -11,6 +11,7 @@ https://ytlab.jp/sign/signbn/download.html
 ```
 
 ## R
+### Load SiGN results and perform boot.strength() in bnlearn
 ```R
 ## import SiGN result
 source("loadSign.R")
@@ -33,6 +34,8 @@ tpEdges <- as.ggplot(as.grob(~graphviz.plot(as.bn(intersection(bnlearn::as.igrap
 tpEdges
 ```
 <img src="https://github.com/noriakis/compare_sign/blob/main/images/tpEdges.png?raw=true" width="800px">
+
+## Extract TP edges between BNs, and annotate the modules by clusterProfiler
 
 ```R
 ## Extract TP edges
@@ -61,7 +64,9 @@ for (i in MEnum){
         pathName[[paste0("ME",i)]] <- paste0("ME", i, " (",res@result$Description[1],")")
     }
 }
-
+```
+## Make ggraph, and make a wordcloud for the non-enriched modules
+```R
 ## Extract igraph
 ig <- intersection(bnlearn::as.igraph(ave), bnlearn::as.igraph(signBn$av))
 ig <- delete.vertices(ig, !names(V(ig)) %in% MEs)
@@ -86,7 +91,7 @@ gg <- ggraph(ig, layout="sugiyama") +
                    bg.r = .15)+
     theme_graph()
 
-## Generate word cloud for non-enriched modules
+## Generate wordcloud for non-enriched modules
 mywc <- list()
 for (i in pathNum){
     ensg <- names(bwmod$colors)
@@ -107,3 +112,4 @@ gg / wrapped + plot_layout(height=c(3,7))
 ## References
 - Scutari, M. (2010). Learning Bayesian Networks with the bnlearn R Package. Journal of Statistical Software, 35(3), 1–22. https://doi.org/10.18637/jss.v035.i03
 - Tamada, Y., Shimamura, T., Yamaguchi, R., Imoto, S., Nagasaki, M., and Miyano, S. (2011). SiGN: Large-scale gene network estimation environment for high performance computing, Genome Informatics, 25 (1), 40-52.
+- Chen,X. et al. (2019) 5-methylcytosine promotes pathogenesis of bladder cancer through stabilizing mRNAs. Nat. Cell Biol., 21, 978–990.
