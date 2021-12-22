@@ -1,5 +1,7 @@
 # compare_sign
 
+Comparing the BN inferred by SiGN-BN HC+BS and bnlearn.
+
 ## Download
 https://ytlab.jp/sign/signbn/download.html
 
@@ -25,6 +27,82 @@ ave <- averaged.network(bs)
 graphviz.compare(ave, signBn$av)
 ```
 <img src="https://github.com/noriakis/compare_sign/blob/main/images/compare.png?raw=true" width="800px">
+
+```R
+tpEdges <- as.ggplot(as.grob(~graphviz.plot(as.bn(intersection(bnlearn::as.igraph(ave), bnlearn::as.igraph(signBn$av))))))
+tpEdges
+```
+<img src="https://github.com/noriakis/compare_sign/blob/main/images/tpEdges.png?raw=true" width="800px">
+
+```R
+## Extract TP edges
+tp <- as.bn(intersection(bnlearn::as.igraph(ave), bnlearn::as.igraph(signBn$av)))$arcs
+MEs <- unique(c(tp[,1], tp[,2]))
+
+## ME number
+MEnum <- unlist(strsplit(MEs,"ME"))
+MEnum <- MEnum[MEnum!=""]
+
+## Check EA
+pathNum <- c() # No enrichment
+pathName <- list()
+for (i in MEnum){
+    ensg <- names(bwmod$colors)
+    candEnsg <- ensg[bwmod$colors==i]
+    candEntre <- AnnotationDbi::select(org.Hs.eg.db, candEnsg, c("ENTREZID"), c("ENSEMBL"))$ENTREZID
+    candEntre <- candEntre[!is.na(candEntre)]
+    res <- ReactomePA::enrichPathway(candEntre, pAdjustMethod = "bonferroni")
+    num <- dim(subset(res@result, p.adjust<0.05))[1]
+    print(num)
+    if (num==0){
+        pathNum <- c(pathNum, i)
+        pathName[[paste0("ME",i)]] <- paste0("ME",i)
+    } else {
+        pathName[[paste0("ME",i)]] <- paste0("ME", i, " (",res@result$Description[1],")")
+    }
+}
+
+## Extract igraph
+ig <- intersection(bnlearn::as.igraph(ave), bnlearn::as.igraph(signBn$av))
+ig <- delete.vertices(ig, !names(V(ig)) %in% MEs)
+
+vPathName <- sapply(names(V(ig)), function(x) pathName[[x]])
+vPathName[sapply(vPathName, function(x) is.null(x))] <- NA
+V(ig)$path <- unlist(vPathName)
+
+## Draw in ggraph
+library(ggraph)
+gg <- ggraph(ig, layout="sugiyama") +
+    geom_edge_diagonal(
+        angle_calc = "along",
+        label_dodge=unit(3,'mm'),
+        arrow=arrow(length=unit(4, 'mm')),
+        end_cap=circle(5, 'mm')) +
+    geom_node_point()+
+    geom_node_text(aes_(label=~stringr::str_wrap(path, width = 25)),
+                   check_overlap=TRUE, repel=TRUE, size = 4,
+                   color = "black",
+                   bg.color = "white", segment.color="white",
+                   bg.r = .15)+
+    theme_graph()
+
+## Generate word cloud for non-enriched modules
+mywc <- list()
+for (i in pathNum){
+    ensg <- names(bwmod$colors)
+    candEnsg <- ensg[bwmod$colors==i]
+    candEntre <- AnnotationDbi::select(org.Hs.eg.db, candEnsg, c("ENTREZID"), c("ENSEMBL"))$ENTREZID
+    candEntre <- candEntre[!is.na(candEntre)]
+    mywc[[as.character(i)]] <- wcGeneSummary(candEntre, max.words=200, random.order=FALSE, excludeFreq=15000,
+                  colors=palettetown::pokepal(floor(runif(1, min=1, max=150))), shape="circle", rot.per=0.4)$wc +
+        ggtitle(paste0("ME",i))
+}
+
+wrapped <- patchwork::wrap_plots(mywc)
+gg / wrapped + plot_layout(height=c(3,7))
+```
+<img src="https://github.com/noriakis/compare_sign/blob/main/images/tpWithWc.png?raw=true" width="800px">
+
 
 ## References
 - Scutari, M. (2010). Learning Bayesian Networks with the bnlearn R Package. Journal of Statistical Software, 35(3), 1–22. https://doi.org/10.18637/jss.v035.i03
