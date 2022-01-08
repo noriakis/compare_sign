@@ -15,7 +15,7 @@ https://ytlab.jp/sign/signbn/download.html
 ```R
 ## import SiGN result
 source("loadSign.R")
-signBn <- loadSign("result")
+signBn <- loadSign("result") # "result" is an output file of SiGN
 
 ## same input as SiGN
 load("bwmod.rda")
