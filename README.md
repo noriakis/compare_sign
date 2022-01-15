@@ -1,6 +1,6 @@
 # compare_sign
 
-Comparing the Bayesian network inferred by SiGN-BN (b-spline nonparametric regression) HC+BS and bnlearn (Gaussian).
+Comparing the Bayesian network inferred by SiGN-BN (*B*-spline nonparametric regression) HC+BS and bnlearn (Gaussian).
 
 ## Download
 https://ytlab.jp/sign/signbn/download.html
