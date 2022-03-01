@@ -24,6 +24,7 @@ loadSign <- function(fileName){
     
     signStr <- edges[,1:3]
     colnames(signStr) <- c("from","to","strength")
+    attr(signStr, "nodes") <- unique(c(signStr$from, signStr$to))
     signStr = structure(signStr, method = "bootstrap", threshold = 0, class = c("bn.strength", class(signStr)))
     signBn <- averaged.network(signStr, threshold=bnlearn::inclusion.threshold(signStr))
     
