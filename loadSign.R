@@ -47,6 +47,8 @@ loadSign <- function(fileName){
 #' @export
 #'
 loadIngor <- function(fileName){
+    returnList <- list()
+    
     df <- read.table(fileName, header=1)
     ingStr <- df[,c(1,2,6)]
     colnames(ingStr) <- c("from","to","strength")
