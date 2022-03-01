@@ -34,3 +34,27 @@ loadSign <- function(fileName){
     returnList[["av"]] <- signBn
     return(returnList)
 }
+
+
+#' loadIngor
+#'
+#' Load the output of ingor
+#'
+#' @param fileName the result of ingor
+#'
+#' @return list of strength, and bn (bnlearn)
+#' @examples loadIngor("result.txt")
+#' @export
+#'
+loadIngor <- function(fileName){
+    df <- read.table(fileName, header=1)
+    ingStr <- df[,c(1,2,6)]
+    colnames(ingStr) <- c("from","to","strength")
+    attr(ingStr, "nodes") <- unique(c(ingStr$from, ingStr$to))
+    ingStr = structure(ingStr, method = "bootstrap", threshold = 0, class = c("bn.strength", class(ingStr)))
+    ingBn <- averaged.network(ingStr, threshold=bnlearn::inclusion.threshold(ingStr))
+    
+    returnList[["str"]] <- ingStr
+    returnList[["av"]] <- ingBn
+    return(returnList)
+}
