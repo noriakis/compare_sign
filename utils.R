@@ -1,6 +1,7 @@
 #' toIngor
 #'
 #' convert data.frame (row: gene name, column: sample name) to GDF format and export.
+#' This function assumes that all the variables are continuous.
 #' 
 #' @param df data.frame (row: gene name, column: sample name)
 #' @param fileName the result of SiGN-BN
@@ -8,6 +9,7 @@
 #' @return tibble in GDF format
 #' @examples toIngor(df, "output.gdf")
 #' @export
+#' 
 toIngor <- function(df, fileName) {
     df <- as_tibble(df, rownames = "gene")
     geneNames <- df$gene
