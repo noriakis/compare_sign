@@ -15,7 +15,7 @@ https://ytlab.jp/sign/signbn/download.html
 ### Load SiGN results and perform boot.strength() in bnlearn
 ```R
 ## import SiGN result
-source("loadSign.R")
+source("utils.R")
 signBn <- loadSign("result") # "result" is an output file of SiGN
 
 ## same input as SiGN

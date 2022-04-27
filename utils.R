@@ -1,3 +1,25 @@
+#' toIngor
+#'
+#' convert data.frame (row: gene name, column: sample name) to GDF format and export.
+#' 
+#' @param df data.frame (row: gene name, column: sample name)
+#' @param fileName the result of SiGN-BN
+#' 
+#' @return tibble in GDF format
+#' @examples toIngor(df, "output.gdf")
+#' @export
+toIngor <- function(df, fileName) {
+    df <- as_tibble(df, rownames = "gene")
+    geneNames <- df$gene
+    sampleNames<-colnames(df)
+    df["@type"]<-rep("cont",nrow(df))
+    df<-df[,c("@type",sample.list)]
+    df<-as_tibble(cbind("@name" = names(df), t(df)))
+    colnames(df)<-c("@name", geneNames)
+    write.table(df, fileName, sep="\t", quote=F, row.names=F)
+    df
+}
+
 #' loadSign
 #'
 #' Load the output of SiGN-BN (HC+BS)
