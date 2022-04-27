@@ -9,6 +9,30 @@ loadIngor() ## Load Ingor outputs
 loadSign() ## Load SiGN outputs
 toIngor() ## Export GDF to be used in Ingor
 ```
+### Example of loadIngor()
+```R
+source("utils.R")
+library(bnlearn)
+library(ggraph)
+library(graphlayouts)
+library(igraph)
+
+output <- loadIngor("output.txt")
+g <- as.igraph(output$av)
+ly <- layout_with_drl(g)
+
+V(g)$x <- ly[,1]
+V(g)$y <- ly[,2]
+
+gr <- ggraph(g, x=x, y=y) +
+    geom_edge_link() +
+    geom_node_point() +
+    theme_graph()
+
+ggsave("gr.png", gr,
+       dpi=300, height=10, width=10)
+```
+<img src="https://github.com/noriakis/software/blob/main/images/gr.png?raw=true" width="800px">
 
 ## Download
 https://ytlab.jp/sign/signbn/download.html
