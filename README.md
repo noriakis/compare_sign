@@ -3,6 +3,13 @@
 Comparing the Bayesian network inferred by SiGN-BN (*B*-spline nonparametric regression) HC+BS and bnlearn (Gaussian).
 Including the functions that load the output of SiGN and ingor as the [bnlearn](https://www.bnlearn.com/) class.
 
+## utils.R
+```R
+loadIngor() ## Load Ingor outputs
+loadSign() ## Load SiGN outputs
+toIngor() ## Export GDF to be used in Ingor
+```
+
 ## Download
 https://ytlab.jp/sign/signbn/download.html
 
