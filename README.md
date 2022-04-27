@@ -9,6 +9,16 @@ loadIngor() ## Load Ingor outputs
 loadSign() ## Load SiGN outputs
 toIngor() ## Export GDF to be used in Ingor
 ```
+### Assigning strength to igraph
+```R
+output <- loadIngor("output.txt")
+g <- as.igraph(output$av)
+edf <- data.frame(as_edgelist(g))
+colnames(edf) <- c("from", "to")
+edf <- edf %>% dplyr::inner_join(output$str, by=c("from", "to"))
+E(g)$strength <- edf$strength
+```
+
 ### Example of loadIngor()
 ```R
 source("utils.R")
